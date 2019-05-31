@@ -9,17 +9,19 @@ public class MonthBalanceLineGraph extends JFrame
 	
 	XYSeriesCollection dataset;
 	JFrame lineGraphFrame;
+	MonthList monthList;
 	
 	String[] longMonths = {"January", "March", "May", "July", "August", "October", "December"};
 	String[] mediumMonths = {"April", "June", "September", "November"};
 	String[] shortMonths = {"February"};
 
 	//initialize the pie chart
-	public void initializeLineGraph()
+	public void initializeLineGraph(MonthList months)
 	{
 		//initialize the JFrame and the dataset
 		lineGraphFrame = new JFrame("Line Graph");
 		dataset = new XYSeriesCollection();
+		monthList = months;
 	}
 	
 	//show the actual line graph	
@@ -29,12 +31,28 @@ public class MonthBalanceLineGraph extends JFrame
 		lineGraphFrame = new JFrame("Line Graph");
 		JFreeChart chart = ChartFactory.createXYLineChart("Month Balance", "Day", "Balance", dataset, PlotOrientation.VERTICAL, true, true, false);
 		ChartPanel chartPanel = new ChartPanel(chart);
-		lineGraphFrame.add(chartPanel);
 		
+		JButton addMonthButton = new JButton("Add Month to Graph");
+		JButton removeMonthButton = new JButton("Remove Month from Graph");
+		
+		JPanel buttonGroup = new JPanel();
+		buttonGroup.setLayout(new BoxLayout(buttonGroup,BoxLayout.X_AXIS));
+		buttonGroup.add(addMonthButton);
+		buttonGroup.add(removeMonthButton);
+		
+		JPanel verticalLayout = new JPanel();
+		verticalLayout.setLayout(new BoxLayout(verticalLayout,BoxLayout.Y_AXIS));
+		verticalLayout.add(chartPanel);
+		verticalLayout.add(buttonGroup);
+
+		lineGraphFrame.add(verticalLayout);
+
 		lineGraphFrame.pack();
 		lineGraphFrame.setTitle("Line Graph");
 		
-		lineGraphFrame.setSize(750, 500);
+		//lineGraphFrame.setLayout(null);
+		
+		lineGraphFrame.setSize(750, 550);
 		lineGraphFrame.setVisible(true);
 	}
 	
