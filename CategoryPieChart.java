@@ -9,11 +9,13 @@ public class CategoryPieChart extends JFrame
 {
 	DefaultPieDataset dataset;
 	JFrame pieChartFrame;
+	MonthList monthList;
 	
 	//initialize the pie chart
-	public void initializePieChart()
+	public void initializePieChart(MonthList months)
 	{
 		//initialize the JFrame and the dataset
+		monthList = months;
 		pieChartFrame = new JFrame("Pie Chart");
 		dataset = new DefaultPieDataset();
 	}
@@ -34,9 +36,25 @@ public class CategoryPieChart extends JFrame
         //add the chart to the panel and frame
 		ChartPanel pieChartPanel = new ChartPanel(chart);
 		pieChartFrame.add(pieChartPanel);		
+		
+		JButton addMonthButton = new JButton("Add Month to Graph");
+		JButton removeMonthButton = new JButton("Remove Month from Graph");
+		
+		JPanel buttonGroup = new JPanel();
+		buttonGroup.setLayout(new BoxLayout(buttonGroup,BoxLayout.X_AXIS));
+		buttonGroup.add(addMonthButton);
+		buttonGroup.add(removeMonthButton);
+		
+		JPanel verticalLayout = new JPanel();
+		verticalLayout.setLayout(new BoxLayout(verticalLayout,BoxLayout.Y_AXIS));
+		verticalLayout.add(pieChartPanel);
+		verticalLayout.add(buttonGroup);
+
+		pieChartFrame.add(verticalLayout);
+		
 		pieChartFrame.pack();
 		pieChartFrame.setTitle("Category Percents");
-		pieChartFrame.setSize(750, 500);
+		pieChartFrame.setSize(750, 550);
 		pieChartFrame.setVisible(true);
 	}
 	
