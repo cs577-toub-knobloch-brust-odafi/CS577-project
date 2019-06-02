@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ListIterator;
+import org.jfree.chart.*;
 
 public class MainGUI extends JPanel{
 	
@@ -20,6 +21,9 @@ public class MainGUI extends JPanel{
 		
 		JButton saveMonthsButton = new JButton("Save Data");
 		saveMonthsButton.setBounds(10,60,130,40);
+		
+		JButton monthAnalysisButton = new JButton ("Analysis");
+		monthAnalysisButton.setBounds(10,110,130,40);
 		
 		
 		//ADD MONTH COMPONENTS (these are only visible once the add button is pressed)
@@ -115,14 +119,19 @@ public class MainGUI extends JPanel{
 		
 		//NEED BUTTONS FOR YEARLY ANALYSIS HERE-----------------------------------------------
 		
-		//JList implementation for listing month objects
+		//JList implementations for listing month and transaction objects
 		DefaultListModel monthListModel = new DefaultListModel();
+		DefaultListModel transListModel = new DefaultListModel();
 		JList monthGUIList = new JList(monthListModel);
+		JList transGUIList = new JList(transListModel);
 		
 		JScrollPane monthPane = new JScrollPane(monthGUIList);
 		monthPane.setBounds(200,10,250,500);
+		
+		JScrollPane transPane = new JScrollPane(transGUIList);
+		transPane.setBounds(200,10,250,500);
 			
-			//double click action block on a list item
+			//double click action block on a month list item
 			monthGUIList.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent m) {
 					JList monthGUIList = (JList)m.getSource();
@@ -139,6 +148,7 @@ public class MainGUI extends JPanel{
 							//hides non-relevant options
 							saveMonthsButton.setVisible(false);
 							addMonthButton.setVisible(false);
+							monthAnalysisButton.setVisible(false);
 							
 							//sets relevant components to be visible
 							addTransaction.setVisible(true);
@@ -148,7 +158,11 @@ public class MainGUI extends JPanel{
 							readFromStatement.setVisible(true);
 							
 							//populates list with transactions within month's list
-							populateTransList(monthListModel, monthsInList.getTarget(i).monthTransactions);
+							monthPane.setVisible(false);
+							transPane.setVisible(true);
+							
+							populateTransList(transListModel, monthsInList.getTarget(i).monthTransactions);
+							
 						}
 					}
 				}
@@ -195,7 +209,7 @@ public class MainGUI extends JPanel{
 							monthsInList.getTarget(currentMonthSelect).monthTransactions.addTranNode(newTransObject);
 							
 							//repopulates the gui pane
-							populateTransList(monthListModel, monthsInList.getTarget(currentMonthSelect).monthTransactions);
+							populateTransList(transListModel, monthsInList.getTarget(currentMonthSelect).monthTransactions);
 							
 							//clears text fields
 							transValField.setText("");
@@ -232,6 +246,36 @@ public class MainGUI extends JPanel{
 					}
 				});
 				
+				cancelTransButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent a) {
+						
+						//repopulates the gui pane
+						populateTransList(transListModel, monthsInList.getTarget(currentMonthSelect).monthTransactions);
+						
+						//clears text fields
+						transValField.setText("");
+						transInField.setText("");
+						transDayField.setText("");
+						
+						//sets current display components to be invisible to return to former display
+						transDayLabel.setVisible(false);
+						transInTypeLabel.setVisible(false);
+						transValueLabel.setVisible(false);
+						transValField.setVisible(false);
+						transInField.setVisible(false);
+						transDayField.setVisible(false);
+						createTransButton.setVisible(false);
+						cancelTransButton.setVisible(false);
+						
+						//sets former display's components to be visible
+						addTransaction.setVisible(true);
+						saveTransButton.setVisible(true);
+						transAnalysisButton.setVisible(true);
+						backToMonthsButton.setVisible(true);
+						readFromStatement.setVisible(true);
+					}
+				});
+				
 				//action block for button that takes user back out of month's transaction menu
 				backToMonthsButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent a) {
@@ -239,6 +283,7 @@ public class MainGUI extends JPanel{
 						//shows relevant options
 						saveMonthsButton.setVisible(true);
 						addMonthButton.setVisible(true);
+						monthAnalysisButton.setVisible(true);
 						
 						//sets irrelevant components to be invisible
 						addTransaction.setVisible(false);
@@ -246,6 +291,9 @@ public class MainGUI extends JPanel{
 						transAnalysisButton.setVisible(false);
 						backToMonthsButton.setVisible(false);
 						readFromStatement.setVisible(false);
+						
+						transPane.setVisible(false);
+						monthPane.setVisible(true);
 						
 						populateList(monthListModel, monthsInList);
 						
@@ -259,6 +307,7 @@ public class MainGUI extends JPanel{
 					//hides non-relevant options for this task
 					saveMonthsButton.setVisible(false);
 					addMonthButton.setVisible(false);
+					monthAnalysisButton.setVisible(false);
 					
 					//sets relevant components to be visible
 					enterYear.setVisible(true);
@@ -296,6 +345,7 @@ public class MainGUI extends JPanel{
 									//hides non-relevant options for this task
 									saveMonthsButton.setVisible(true);
 									addMonthButton.setVisible(true);
+									monthAnalysisButton.setVisible(true);
 									
 									//sets relevant components to be visible
 									enterYear.setVisible(false);
@@ -326,6 +376,7 @@ public class MainGUI extends JPanel{
 							//shows relevant options for this task
 							saveMonthsButton.setVisible(true);
 							addMonthButton.setVisible(true);
+							monthAnalysisButton.setVisible(true);
 							
 							//sets irrelevant components to be invisible
 							enterYear.setVisible(false);
@@ -370,8 +421,12 @@ public class MainGUI extends JPanel{
 		add(createTransButton);
 		add(cancelTransButton);
 		add(backFromAddMonth);
+		add(monthAnalysisButton);
 		
 		add(monthPane);	
+		add(transPane);
+		
+		transPane.setVisible(false);
 		
 		//sets stage for initial GUI options
 		enterYear.setVisible(false);
