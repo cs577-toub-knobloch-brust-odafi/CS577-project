@@ -26,7 +26,7 @@ public class ParseStatement {
 			
 			File fileSelection = fileSelector.getSelectedFile();
 			
-			statementName = fileSelection.getName();
+			statementName = fileSelection.getAbsolutePath();
 			
 			try {
 	
